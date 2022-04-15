@@ -12,13 +12,16 @@
 
 <div class="container">
     <div class="row">
-        @foreach (var animal in shuffledAnimals)
+        @for (var animalNumber = 0; animalNumber < shuffledAnimals.Count; animalNumber++)
         {
-            <div class="col-3">
-                <button type="button" class="btn btn-outline-dark">
-                    <h1>@animal</h1>
-                </button>
-            </div>
+            var animal = shuffledAnimals[animalNumber];
+            var uniqueDescription = $"Przycisk numer {animalNumber}";
+        <div class="col-3">
+            <button @onclick="@(() => ButtonClick(animal, uniqueDescription))"
+                    type="button" class="btn btn-outline-dark">
+                <h1>@animal</h1>
+            </button>
+        </div>
         }
         https://github.com/pmajerczyk22/C-game
 
@@ -54,5 +57,30 @@
             .OrderBy(item => random.Next())
             .ToList();
     }
+
+    string lastAnimalFound = string.Empty;
+    string lastDescription = string.Empty;
+    private void ButtonClick(string animal, string animalDescription)
+    {
+        if (lastAnimalFound == string.Empty)
+        {
+            lastAnimalFound = animal;
+            lastDescription = animalDescription;
+        }
+        else if ((lastAnimalFound == animal) && (animalDescription != lastDescription))
+        {
+            //znaleziono dopasowanie! Resetowanie, aby móc utworzyć następną parę.
+            lastAnimalFound = string.Empty;
+            //Zastępowanie znalezionych zwierząt pustym łańcuchem, aby ukryć emoji.
+            shuffledAnimals = shuffledAnimals //tego fragmentu nierozumiem
+                .Select(a => a.Replace(animal, string.Empty))
+                .ToList();
+        }
+        else
+        {
+            lastAnimalFound = string.Empty;
+        }
+    }
+
 
 }
